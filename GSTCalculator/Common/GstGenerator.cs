@@ -23,7 +23,7 @@ namespace GSTCalculator.Common
 
         }
 
-        public bool ValidateDataReceived(InputText text, string[] openTag, string[] closeTag)
+        public bool ValidateDataReceived(InputText text, Stack<string> openTag)
         {
             bool valid = true;
 
@@ -31,7 +31,7 @@ namespace GSTCalculator.Common
             {
                 valid = false;
             }
-            if(closeTag.Reverse() != openTag)
+            if(openTag.Count == 0)
             {
                 valid = false;
             }

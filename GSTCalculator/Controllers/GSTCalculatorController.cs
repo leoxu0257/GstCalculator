@@ -1,22 +1,16 @@
 ﻿using GSTCalculator.Common;
 using GSTCalculator.Models;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Xml.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using System.Web.Http;
 using System;
 using System.Xml;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace GSTCalculator.Controllers
 {
     public class GSTCalculatorController : ApiController
     {
-        // GET: api/GSTCalculator
-        //private XmlNameTable filename;
-
-        // GET: api/GSTCalculator
         private const String filename = "C:\\Users\\User\\Desktop\\Books.xml";
 
         private const String costCentreElementName = "cost_centre";
@@ -32,11 +26,11 @@ namespace GSTCalculator.Controllers
             XmlTextReader reader = null;
             InputText text = new InputText();
             text.Expense = new Expense();
-            string[] openTag = new string[] { };
-            string[] closeTag = new string[] { };
+            Stack<string> openTag = new Stack<string>();
             try
             {
                 // Load the reader with the data file and ignore all white space nodes.
+
                 reader = new XmlTextReader(filename);
                 reader.WhitespaceHandling = WhitespaceHandling.None;
                 String elementName = String.Empty;
@@ -50,7 +44,7 @@ namespace GSTCalculator.Controllers
                         case XmlNodeType.Element:
                             Console.Write("<{0}>", reader.Name);
                             elementName = reader.Name;
-                            openTag.Append(elementName);
+                            openTag.Push(elementName);
                             break;
                         case XmlNodeType.Text:
                             Console.Write(reader.Value);
@@ -82,7 +76,10 @@ namespace GSTCalculator.Controllers
 
                         case XmlNodeType.EndElement: // can use for validation
                             Console.Write("</{0}>", reader.Name);
-                            closeTag.Append(elementName);
+                            if(openTag.Peek() == elementName)
+                            {
+                                openTag.Pop();
+                            }
                             break;
                     }
                 }
@@ -95,7 +92,7 @@ namespace GSTCalculator.Controllers
             }
 
             GstGenerator generator = new GstGenerator();
-            bool valid = generator.ValidateDataReceived(text, openTag, closeTag);
+            bool valid = generator.ValidateDataReceived(text, openTag, closeTag);// check validation
             if (!valid) 
             {
                 return BadRequest("Request not valid");
@@ -104,27 +101,6 @@ namespace GSTCalculator.Controllers
             double gst = generator.CaculateGst(text)[0];
             double totalWithoutGST = generator.CaculateGst(text)[1];
             return Ok(text);
-        }
-
-        // GET: api/GSTCalculator/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST: api/GSTCalculator
-        //public void Post([FromBody]string value)
-        //{
-        //}
-
-        // PUT: api/GSTCalculator/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/GSTCalculator/5
-        public void Delete(int id)
-        {
         }
     }
 }
