@@ -31,13 +31,10 @@ namespace GSTCalculator.Common
             {
                 valid = false;
             }
-            if(openTag.Count == 0)
+            if(openTag.Count != 0)
             {
                 valid = false;
-            }
-            
-          
-            
+            }       
             return valid;
         }
     }
