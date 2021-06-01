@@ -10,10 +10,10 @@ namespace GSTCalculator.Models
     public class Expense
     {
         [XmlElement("cost_centre")]
-        public string CostCentre { get; set; }
+        public string CostCentre { get; set; } = "UNKNOWN";
 
         [XmlElement("total")]
-        public double Total { get; set; }
+        public double? Total { get; set; } = null;
 
         [XmlElement("payment_method")]
         public string PaymentMethod { get; set; }
