@@ -10,8 +10,14 @@ namespace GSTCalculator.Models
     {
         [XmlElement("expense")]
         public Expense Expense { get; set; }
+
+        [XmlElement("vender")]
         public string Vender { get; set; }
+
+        [XmlElement("description")]
         public string Description { get; set; }
-        public string Data { get; set; }
+
+        [XmlElement("date")]
+        public string Date { get; set; }
     }
 }
