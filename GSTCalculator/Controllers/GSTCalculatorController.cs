@@ -1,13 +1,13 @@
 ﻿using GSTCalculator.Common;
 using GSTCalculator.Models;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
+using System;
 using System.Xml;
+using System.Linq;
 
 namespace GSTCalculator.Controllers
 {
@@ -25,7 +25,9 @@ namespace GSTCalculator.Controllers
         private const String venderElementName = "vender";
         private const String descriptionElementName = "description";
         private const String dateElementName = "date";
-        public IActionResult Get()
+
+        [HttpPost]
+        public IActionResult Post()
         {
             XmlTextReader reader = null;
             InputText text = new InputText();
@@ -95,13 +97,13 @@ namespace GSTCalculator.Controllers
             GstGenerator generator = new GstGenerator();
             bool valid = generator.ValidateDataReceived(text, openTag, closeTag);
             if (!valid) 
-            { 
-                return (IActionResult)BadRequest("Request not valid"); 
+            {
+                return BadRequest("Request not valid");
             }
             
             double gst = generator.CaculateGst(text)[0];
             double totalWithoutGST = generator.CaculateGst(text)[1];
-            return (IActionResult)Ok(text);
+            return Ok(text);
         }
 
         // GET: api/GSTCalculator/5
@@ -111,9 +113,9 @@ namespace GSTCalculator.Controllers
         }
 
         // POST: api/GSTCalculator
-        public void Post([FromBody]string value)
-        {
-        }
+        //public void Post([FromBody]string value)
+        //{
+        //}
 
         // PUT: api/GSTCalculator/5
         public void Put(int id, [FromBody]string value)
